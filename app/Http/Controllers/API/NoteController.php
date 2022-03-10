@@ -13,9 +13,15 @@ class NoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $notes = Note::all();
+        //validate user_id field
+        $request->validate([
+            'user_id' => 'bail|required|exists:App\Models\User,id|numeric',
+        ]);
+
+        //get only the posts by that user
+        $notes = Note::where('user_id', $request->get('user_id'))->get();
         return response()->json($notes);
     }
 
@@ -52,6 +58,8 @@ class NoteController extends Controller
      */
     public function show($id)
     {
+        //TODO look up by ID and match to given user_id
+
         $note = Note::findOrFail($id);
         return response()->json($note);
     }
