@@ -11,11 +11,12 @@ class Note extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'title',
         'note',
     ];
 
     public function user() {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 }
