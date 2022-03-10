@@ -68,11 +68,12 @@ class NoteController extends Controller
         $note = Note::findOrFail($id);
 
         $request->validate([
-            'user_id' => 'unique:users,id',
-            'title' => 'required|max:50',
+            'user_id' => 'bail|required|exists:App\Models\User,id|numeric',
+            'title' => 'bail|required|max:50',
             'note' => 'max:1000',
         ]);
 
+        $note->user_id = $request->get('user_id');
         $note->title = $request->get('title');
         $note->note = $request->get('note');
 
