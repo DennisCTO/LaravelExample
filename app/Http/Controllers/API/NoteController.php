@@ -15,17 +15,8 @@ class NoteController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $notes = Note::all();
+        return response()->json($notes);
     }
 
     /**
@@ -36,7 +27,21 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'unique:users,id',
+            'title' => 'required|max:50',
+            'note' => 'max:1000',
+        ]);
+
+        $note = new Note([
+            'user_id' => $request->get('user_id'),
+            'title' => $request->get('title'),
+            'note' => $request->get('note')
+        ]);
+
+        $note->save();
+
+        return response()->json($note);
     }
 
     /**
@@ -47,18 +52,8 @@ class NoteController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $note = Note::findOrFail($id);
+        return response()->json($note);
     }
 
     /**
@@ -70,7 +65,20 @@ class NoteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $note = Note::findOrFail($id);
+
+        $request->validate([
+            'user_id' => 'unique:users,id',
+            'title' => 'required|max:50',
+            'note' => 'max:1000',
+        ]);
+
+        $note->title = $request->get('title');
+        $note->note = $request->get('note');
+
+        $note->save();
+
+        return response()->json($note);
     }
 
     /**
@@ -81,6 +89,9 @@ class NoteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $note = Note::findOrFail($id);
+        $note->delete();
+
+        return response()->json(["Success" => "Successfully deleted note with ID of $id"]);
     }
 }
