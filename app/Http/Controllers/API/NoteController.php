@@ -28,8 +28,8 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'unique:users,id',
-            'title' => 'required|max:50',
+            'user_id' => 'bail|required|exists:App\Models\User,id|numeric',
+            'title' => 'bail|required|max:50',
             'note' => 'max:1000',
         ]);
 
